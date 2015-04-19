@@ -2,7 +2,7 @@
   "name": "bitwasp/testing-php",
   "description": "Composer package which includes most common development & testing software for PHP, and a sample build.xml for phing",
   "homepage": "https://github.com/Bit-Wasp/testing-php",
-  "licence": "unlicenced",
+  "licence": "unlicence",
   "authors": [
     {
       "name": "Thomas Kerin",
