@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="bitcoin-php  " default="build">
+
+    <property name="toolsdir" value="${project.basedir}/vendor/bin"/>
+    <property name="builddir" value="${project.basedir}/build/"/>
+    
+    <target name="build" depends="prepare,lint,phpcbf,phpunit" />
+
+    <target name="clean"
+            unless="clean.done"
+            description="Cleanup build artifacts">
+        <delete dir="${builddir}/coverage"/>
+        <delete dir="${builddir}/cache"/>
+        <delete dir="${builddir}/logs"/>
+        <property name="clean.done" value="true"/>
+    </target>
+
+    <target name="prepare"
+            unless="prepare.done"
+            depends="clean"
+            description="Prepare for build">
+        <mkdir dir="${builddir}/coverage"/>
+        <mkdir dir="${builddir}/cache"/>
+        <mkdir dir="${builddir}/logs"/>
+        <property name="prepare.done" value="true"/>
+    </target>
+
+    <target name="lint"
+        description="Check the syntax of PHP files">
+        <mkdir dir="${builddir}/cache" />
+        <phplint cachefile="${builddir}/cache/phplint.cache">
+            <fileset dir="${project.basedir}/src">
+                <include name="**/*.php"/>
+            </fileset>
+            <fileset dir="${project.basedir}/tests">
+                <include name="**/*.php"/>
+            </fileset>
+        </phplint>
+    </target>
+
+    <target name="phpunit"
+            description="Run test suite"
+            >
+        <delete dir="${builddir}/docs/code-coverage" />
+        <mkdir dir="${builddir}/docs/code-coverage" />
+        <exec executable="${toolsdir}/phpunit" passthru="true">
+            <arg value="-c" />
+            <arg path="${project.basedir}" />
+            <arg value="--debug" />
+        </exec>
+    </target>
+
+    <target name="phploc"
+            unless="phploc.done"
+            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
+        <exec executable="${toolsdir}/phploc">
+            <arg value="--count-tests" />
+            <arg path="${project.basedir}/src" />
+
+        </exec>
+
+        <property name="phploc.done" value="true"/>
+    </target>
+
+    <target name="phploc-ci"
+            unless="phploc.done"
+            depends="prepare"
+            description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phploc">
+            <arg value="--count-tests" />
+            <arg value="--log-csv" />
+            <arg path="${builddir}/logs/phploc.csv" />
+            <arg value="--log-xml" />
+            <arg path="${builddir}/logs/phploc.xml" />
+            <arg path="${project.basedir}/src" />
+            <arg path="${project.basedir}/tests" />
+        </exec>
+
+        <property name="phploc.done" value="true"/>
+    </target>
+    <target name="phpcpd"
+            unless="phpcpd.done"
+            description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="${toolsdir}/phpcpd">
+            <arg path="${project.basedir}/src" />
+        </exec>
+
+        <property name="phpcpd.done" value="true"/>
+    </target>
+
+    <target name="phpcpd-ci"
+            unless="phpcpd.done"
+            depends="prepare"
+            description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phpcpd">
+            <arg value="--log-pmd" />
+            <arg path="${builddir}/logs/pmd-cpd.xml" />
+            <arg path="${project.basedir}/src" />
+        </exec>
+
+        <property name="phpcpd.done" value="true"/>
+    </target>
+
+    <target name="phpcs"
+            description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing."
+            >
+        <exec executable="${toolsdir}/phpcs" output="/dev/null">
+            <arg value="--standard=PSR1,PSR2" />
+            <arg value="--extensions=php" />
+            <arg path="${project.basedir}/src" />
+            <arg path="${project.basedir}/tests" />
+        </exec>
+    </target>
+
+    <target name="phpcs-ci"
+            description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing."
+            depends="prepare"
+            >
+        <exec executable="${toolsdir}/phpcs" output="/dev/null">
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${builddir}/logs/checkstyle.xml" />
+            <arg value="--standard=PSR1,PSR2" />
+            <arg value="--extensions=php" />
+            <arg path="${project.basedir}/src" />
+        </exec>
+    </target>
+
+    <target name="phpcbf"
+            description="Fix coding standard violations using PHP_CodeSniffer. Intended for usage on the command line before committing."
+            >
+        <exec command="${toolsdir}/phpcbf ./src ./tests --standard=PSR1,PSR2 -n" passthru="true">
+        </exec>
+    </target>
+
+    <target name="phpmd">
+        <exec command="${toolsdir}/phpmd src/ text build/phpmd.xml" passthru="true">
+        </exec>
+    </target>
+
+    <target name="phpcpd-ci"
+            unless="phpcpd.done"
+            depends="prepare"
+            description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}/phpcpd">
+            <arg value="--log-pmd" />
+            <arg path="${builddir}/logs/pmd-cpd.xml" />
+            <arg path="${project.basedir}/src" />
+        </exec>
+
+        <property name="phpcpd.done" value="true"/>
+    </target>
+
+    <target name="phpdox"
+            unless="phpdox.done"
+            depends="phploc-ci,phpcs-ci"
+            description="Generate project documentation using phpDox">
+        <exec executable="${toolsdir}/phpdox" dir="${project.basedir}"/>
+
+        <property name="phpdox.done" value="true"/>
+    </target>
+
+</project>
