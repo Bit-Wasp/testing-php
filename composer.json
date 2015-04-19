@@ -8,6 +8,7 @@
       "name": "Thomas Kerin",
       "homepage": "https://thomaskerin.io",
       "role": "Author"
+    }
   ],
   "require": {
     "phploc/phploc": "2.1.1",
