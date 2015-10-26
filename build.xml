@@ -23,6 +23,7 @@
         <mkdir dir="${builddir}/coverage"/>
         <mkdir dir="${builddir}/cache"/>
         <mkdir dir="${builddir}/logs"/>
+        <mkdir dir="${builddir}/docs"/>
         <property name="prepare.done" value="true"/>
     </target>
 
@@ -50,6 +51,19 @@
             <arg value="--debug" />
         </exec>
     </target>
+
+
+    <target name="phpunit-doc"
+            description="Run test suite with coverage"
+            >
+        <exec executable="${toolsdir}/phpunit" passthru="true">
+            <arg value="-c" />
+            <arg path="${project.basedir}" />
+            <arg value="--coverage-clover=${project.basedir}/build/coverage/coverage.clover" />
+            <arg value="--coverage-html=${project.basedir}/build/docs" />
+        </exec>
+    </target>
+
 
     <target name="phploc"
             unless="phploc.done"
@@ -136,19 +150,6 @@
     <target name="phpmd">
         <exec command="${toolsdir}/phpmd src/ text build/phpmd.xml" passthru="true">
         </exec>
-    </target>
-
-    <target name="phpcpd-ci"
-            unless="phpcpd.done"
-            depends="prepare"
-            description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
-        <exec executable="${toolsdir}/phpcpd">
-            <arg value="--log-pmd" />
-            <arg path="${builddir}/logs/pmd-cpd.xml" />
-            <arg path="${project.basedir}/src" />
-        </exec>
-
-        <property name="phpcpd.done" value="true"/>
     </target>
 
     <target name="phpdox"
