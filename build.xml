@@ -52,7 +52,6 @@
         </exec>
     </target>
 
-
     <target name="phpunit-doc"
             description="Run test suite with coverage"
             >
@@ -62,58 +61,6 @@
             <arg value="--coverage-clover=${project.basedir}/build/coverage/coverage.clover" />
             <arg value="--coverage-html=${project.basedir}/build/docs" />
         </exec>
-    </target>
-
-
-    <target name="phploc"
-            unless="phploc.done"
-            description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
-        <exec executable="${toolsdir}/phploc">
-            <arg value="--count-tests" />
-            <arg path="${project.basedir}/src" />
-
-        </exec>
-
-        <property name="phploc.done" value="true"/>
-    </target>
-
-    <target name="phploc-ci"
-            unless="phploc.done"
-            depends="prepare"
-            description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
-        <exec executable="${toolsdir}phploc">
-            <arg value="--count-tests" />
-            <arg value="--log-csv" />
-            <arg path="${builddir}/logs/phploc.csv" />
-            <arg value="--log-xml" />
-            <arg path="${builddir}/logs/phploc.xml" />
-            <arg path="${project.basedir}/src" />
-            <arg path="${project.basedir}/tests" />
-        </exec>
-
-        <property name="phploc.done" value="true"/>
-    </target>
-    <target name="phpcpd"
-            unless="phpcpd.done"
-            description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="${toolsdir}/phpcpd">
-            <arg path="${project.basedir}/src" />
-        </exec>
-
-        <property name="phpcpd.done" value="true"/>
-    </target>
-
-    <target name="phpcpd-ci"
-            unless="phpcpd.done"
-            depends="prepare"
-            description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
-        <exec executable="${toolsdir}phpcpd">
-            <arg value="--log-pmd" />
-            <arg path="${builddir}/logs/pmd-cpd.xml" />
-            <arg path="${project.basedir}/src" />
-        </exec>
-
-        <property name="phpcpd.done" value="true"/>
     </target>
 
     <target name="phpcs"
@@ -150,15 +97,6 @@
     <target name="phpmd">
         <exec command="${toolsdir}/phpmd src/ text build/phpmd.xml" passthru="true">
         </exec>
-    </target>
-
-    <target name="phpdox"
-            unless="phpdox.done"
-            depends="phploc-ci,phpcs-ci"
-            description="Generate project documentation using phpDox">
-        <exec executable="${toolsdir}/phpdox" dir="${project.basedir}"/>
-
-        <property name="phpdox.done" value="true"/>
     </target>
 
 </project>
