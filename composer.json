@@ -12,10 +12,8 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "phploc/phploc": "@stable",
-    "pdepend/pdepend": "@stable",
+    "squizlabs/php_codesniffer": "2.*",
     "phpmd/phpmd": "@stable",
-    "phpunit/phpunit": "@stable",
-    "sebastian/phpcpd": "@stable",
+    "phpunit/phpunit": "@stable"
   }
 }
