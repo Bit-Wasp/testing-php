@@ -1,13 +1,9 @@
 ## testing-php
 Composer package for PHP unit testing tools, using Phing for Jenkins or local development
 Includes: 
-  - phploc
   - pdepend
   - phpmd
   - phpunit
-  - phpcpd
-  - phpdox
-  - phpdoc2
   - phpcs / phpcbf
 
 #### Installation:

@@ -17,8 +17,5 @@
     "phpmd/phpmd": "@stable",
     "phpunit/phpunit": "@stable",
     "sebastian/phpcpd": "@stable",
-    "theseer/phpdox": "@stable",
-    "phpdocumentor/phpdocumentor": "@stable",
-    "squizlabs/php_codesniffer": "@stable"
   }
 }
